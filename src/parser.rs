@@ -13,13 +13,16 @@ use nom::{
 };
 
 //  =========== Enums ===========
-
+/// Holds the add and subtract operations
+/// Backus-Naur -> <expr> ::= <term> | <expr> "+" <term> | <expr> "-" <term>
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum ExprOperator {
     Add,
     Subtract,
 }
 
+/// Represents a factor
+/// Backus-Naur -> <factor> ::= <identifier> | <literal> | "(" <expr> ")"
 #[derive(Debug, PartialEq)]
 pub enum ParsedFactor<'a> {
     Literal(f64),
@@ -27,6 +30,8 @@ pub enum ParsedFactor<'a> {
     SubExpression(Box<ParsedExpr<'a>>),
 }
 
+/// Represents a statement
+/// Backus-Naur -> <statement> ::= "@" <identifier> | ">" <identifier> | "<" <identifier>
 #[derive(Debug)]
 pub enum ParsedStatement<'a> {
     Declaration(&'a str),
@@ -35,6 +40,8 @@ pub enum ParsedStatement<'a> {
     Assignment(&'a str, ParsedExpr<'a>),
 }
 
+/// Represents a term
+/// Backus-Naur -> <term> ::= <factor> | <term> "*" <factor> | <term> "/" <factor>
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum TermOperator {
     Multiply,
@@ -42,8 +49,11 @@ pub enum TermOperator {
 }
 
 //  =========== Types ===========
+/// A tuple that represents a parsed term and a vector of expression operators and parsed terms
 pub type ParsedExpr<'a> = (ParsedTerm<'a>, Vec<(ExprOperator, ParsedTerm<'a>)>);
+/// Represents a vector of the parsed statements
 pub type ParsedProgram<'a> = Vec<ParsedStatement<'a>>;
+/// A tuple that represents a parsed factor and a vector of term operators and parsed factors
 pub type ParsedTerm<'a> = (ParsedFactor<'a>, Vec<(TermOperator, ParsedFactor<'a>)>);
 
 //  =========== Parser Functions ===========
