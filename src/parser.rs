@@ -143,7 +143,7 @@ fn parse_term(input: &str) -> IResult<&str, ParsedTerm> {
     ))(input)
 }
 
-pub fn parse_progam(input: &str) -> IResult<&str, ParsedProgram> {
+pub fn program_parser(input: &str) -> IResult<&str, ParsedProgram> {
     many0(preceded(
         skip_spaces,
         alt((
