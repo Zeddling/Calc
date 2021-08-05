@@ -1,4 +1,5 @@
 mod analyzer;
+mod compiler;
 mod executor;
 mod parser;
 mod symbol_table;
@@ -66,9 +67,27 @@ fn process_file(current_program_path: &str, source_path: &str) {
         }
     }
 
-    println!("Symbol table: {:#?}", variables);
-    println!("Parsed program: {:#?}", parsed_program);
-    println!("Analyzed program: {:#?}", analyzed_program);
+    //  Remove file if it exists
+    if std::path::Path::new("./calc_target/output.rs").exists() {
+        std::fs::remove_file("./output.rs").unwrap();
+    }
+
+    //  Create dir if it doesn't exist
+    if !std::path::Path::new("./calc_target/").exists() {
+        std::fs::create_dir("./calc_target").unwrap();
+    }
+
+    match std::fs::write(
+        "./calc_target/output.rs",
+        compiler::to_program(&variables, &analyzed_program),
+    ) {
+        Ok(_) => {
+            eprintln!("Translation successful.");
+        }
+        Err(err) => {
+            eprintln!("Translation failed with error: {}", err);
+        }
+    }
 }
 
 fn run_interpreter() {
@@ -80,7 +99,10 @@ fn run_interpreter() {
             break;
         }
         match command.trim() {
-            "q" => break,
+            "q" => {
+                eprintln!("Exiting");
+                break;
+            }
             "c" => {
                 variables = symbol_table::SymbolTable::new();
                 eprintln!("Cleared variables");

@@ -67,12 +67,17 @@ impl SymbolTable {
         }
     }
 
-    /// Returns the value of the specified position
+    /// Returns the value of the specified identifier
     pub fn get_value(&self, handle: usize) -> f64 {
         self.entries[handle].1
     }
 
-    /// Updates the value of the specified handle
+    /// Returns the name of the identifier
+    pub fn get_name(&self, handle: usize) -> String {
+        self.entries[handle].0.clone()
+    }
+
+    /// Updates the value of the specified identifier
     pub fn set_value(&mut self, handle: usize, value: f64) {
         self.entries[handle].1 = value;
     }
